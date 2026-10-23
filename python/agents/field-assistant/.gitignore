@@ -1,0 +1,8 @@
+# Local data (your real tracker and visit logs live here; never commit it)
+data/
+*.xlsx
+*.csv
+!tests/**/*.csv
+.env
+env.yaml
+.venv/
