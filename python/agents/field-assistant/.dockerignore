@@ -1,0 +1,7 @@
+.venv
+data
+tests
+*.xlsx
+*.csv
+.env
+env.yaml

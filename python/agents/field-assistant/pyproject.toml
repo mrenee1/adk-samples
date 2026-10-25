@@ -1,0 +1,53 @@
+[project]
+name = "field-assistant"
+version = "0.1.0"
+description = "Door-to-door sales field assistant: plan, log knocks, submit; ADK agent + AG-UI + A2UI"
+license = {text = "Apache License 2.0"}
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "google-adk>=1.28.1",
+    "google-genai>=1.0",
+    "ag-ui-adk>=0.11.0",
+    "ag-ui-a2ui-toolkit>=0.0.3",
+    "fastapi>=0.115.2",
+    "uvicorn[standard]>=0.30",
+    "httpx>=0.27",
+    "python-multipart>=0.0.9",
+    "openpyxl>=3.1",
+    "google-cloud-firestore>=2.16",
+    "firebase-admin>=6.5",
+    "tzdata",  # time zones inside slim containers
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "playwright>=1.48",
+    "ruff>=0.4.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["field_assistant"]
+
+[tool.ruff]
+extend = "../../../pyproject.toml"
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI's Body()/File() defaults and ADK tool signatures are idiomatic.
+"field_assistant/server.py" = ["B008"]
+"field_assistant/agent.py" = ["PLR0917"]
+"field_assistant/field.py" = ["PLR0917"]
+"tests/*" = ["PLR2004"]
+"**/__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["field_assistant"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::UserWarning", "ignore::DeprecationWarning"]
