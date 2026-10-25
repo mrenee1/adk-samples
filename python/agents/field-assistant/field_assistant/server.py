@@ -14,7 +14,16 @@ from fastapi import Body, Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import auth, config, emails, field, importer, workflows, zoho_export
+from . import (
+    auth,
+    config,
+    emails,
+    field,
+    importer,
+    seed,
+    workflows,
+    zoho_export,
+)
 from .agent import root_agent
 from .store import read_upload, save_upload
 
@@ -50,6 +59,8 @@ def get_config() -> dict[str, Any]:
 
 @app.get("/api/me")
 def me(user: str = User) -> dict[str, Any]:
+    if config.DEMO_SEED and not field.list_businesses(user):
+        seed.seed(user)
     return {"user": user, "settings": field.get_settings(user)}
 
 

@@ -16,7 +16,19 @@ WEB_DIR = Path(os.getenv("WEB_DIR", PROJECT_DIR / "web"))
 # "local" keeps everything in JSON files under DATA_DIR; "firestore" uses the
 # Google Cloud project the service runs in.
 DATA_BACKEND = os.getenv("DATA_BACKEND", "local")
-DATA_DIR = Path(os.getenv("DATA_DIR", PROJECT_DIR / "data"))
+# Vercel's file system is read-only except /tmp (wiped on every cold start),
+# so local mode there is for demos only. Use DATA_BACKEND=firestore for real data.
+ON_VERCEL = bool(os.getenv("VERCEL"))
+DATA_DIR = Path(
+    os.getenv(
+        "DATA_DIR", "/tmp/field-data" if ON_VERCEL else PROJECT_DIR / "data"
+    )
+)
+# Load the fake demo businesses when the store is empty (demo deployments).
+DEMO_SEED = os.getenv("DEMO_SEED", "") == "1"
+# Firestore credentials for hosts outside Google Cloud (e.g. Vercel): paste
+# the service account key JSON into this variable.
+SERVICE_ACCOUNT_JSON = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON", "")
 
 # "none" for local testing; "firebase" requires a Firebase Google sign-in and
 # an email on ALLOWED_EMAILS.
