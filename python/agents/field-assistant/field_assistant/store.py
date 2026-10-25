@@ -76,7 +76,11 @@ class FirestoreStore:
     def __init__(self):
         from google.cloud import firestore  # noqa: PLC0415
 
-        self.db = firestore.Client()
+        if config.SERVICE_ACCOUNT_JSON:
+            info = json.loads(config.SERVICE_ACCOUNT_JSON)
+            self.db = firestore.Client.from_service_account_info(info)
+        else:
+            self.db = firestore.Client()
 
     def list(self, col):
         return [d.to_dict() for d in self.db.collection(col).stream()]
